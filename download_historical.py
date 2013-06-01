@@ -32,6 +32,8 @@ def get_historical_data(directory, year, unzip=False):
             print 'Downloading {}'.format(to_get)
             url = 'http://gdelt.utdallas.edu/data/backfiles/{}.zip'.format(to_get)
             written_file = _download_chunks(directory, url)
+            if unzip:
+                _unzip_file(directory, written_file)
     elif int(year) >= 2006:
         year = int(year)
         for i in range(1, 13):
@@ -41,10 +43,11 @@ def get_historical_data(directory, year, unzip=False):
             written_file = _download_chunks(directory, url)
             print 'Pausing 15 seconds...'
             time.sleep(15)
+            if unzip:
+                _unzip_file(directory, written_file)
     else:
         print "That's not a valid year!"
-    if unzip:
-        _unzip_file(directory, written_file)
+    print 'Pausing 30 seconds...'
     time.sleep(30)
 
 
@@ -173,7 +176,7 @@ if __name__ == '__main__':
                                          daily update files.""")
     daily_command.add_argument('-d', '--directory', help="""Path of directory
                                for file download""")
-    daily_command.add_argument('-U', '--unzip', '--unzip', action='store_true',
+    daily_command.add_argument('-U', '--unzip', action='store_true',
                                default=False, help="""Boolean flag indicating
                                whether or not to unzip the downloaded
                                files.""")
@@ -185,7 +188,7 @@ if __name__ == '__main__':
     single_command.add_argument('-y', '--year', help='Year to download')
     single_command.add_argument('-d', '--directory', help="""Path of directory
                                 for file download""")
-    single_command.add_argument('-U', '--unzip', '--unzip', action='store_true',
+    single_command.add_argument('-U', '--unzip', action='store_true',
                                 default=False, help="""Boolean flag indicating
                                 whether or not to unzip the downloaded
                                 files.""")
@@ -198,7 +201,7 @@ if __name__ == '__main__':
                                1979-1981""")
     range_command.add_argument('-d', '--directory', help="""Path of directory
                                for file download""")
-    range_command.add_argument('-U', '--unzip', '--unzip', action='store_true',
+    range_command.add_argument('-U', '--unzip', action='store_true',
                                default=False, help="""Boolean flag indicating
                                whether or not to unzip the downloaded
                                files.""")
