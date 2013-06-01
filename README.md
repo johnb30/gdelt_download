@@ -4,12 +4,13 @@ The GDELT data is spread across multiple files, with a new file added each day.
 Downloading each and every file is not a fun endeavor. These scripts were 
 written in order to aid in the download of the GDELT data. The first script 
 `download_historical.py` is aimed at downloading the historical data, and the 
-previous daily updated. 
+previous daily updated. The second script, `download_daily.py`, is aimed
+at downloading the new files that are uploaded to the GDELT website each day.
+This script enables the user to either call the script each day to fetch the
+newest upload, or to run the process in the background to download the new 
+updates each day at 10:00am. 
 
-A second script will soon be added. This script, `download_daily.py`, is aimed
-at downloading the new files that are uploaded to the GDELT website each day. 
-
-Each script implements a 30 second delay between each download in order to 
+Each script implements a 30 second delay where appropriate in order to 
 avoid swamping the server.
 
 ##`download_historical` Usage
