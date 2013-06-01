@@ -17,7 +17,7 @@ def get_historical_data(directory, year, unzip=False):
     ----------
 
     directory: String.
-               Directory to write the downloaded file.ing.
+               Directory to write the downloaded file.
 
     year: String or int.
           Year of files to download.
@@ -33,12 +33,8 @@ def get_historical_data(directory, year, unzip=False):
             url = 'http://gdelt.utdallas.edu/data/backfiles/{}.zip'.format(to_get)
             written_file = _download_chunks(directory, url)
     elif int(year) >= 2006:
-        for i in range(01, 13):
-            if i < 10:
-                month = '0{}'.format(i)
-            else:
-                month = str(i)
-            to_get = '{}{}'.format(year, month)
+        for i in range(1, 13):
+            to_get = '%4d%02d' % (year, i)
             print 'Processing {}'.format(to_get)
             url = 'http://gdelt.utdallas.edu/data/backfiles/{}.zip'.format(to_get)
             written_file = _download_chunks(directory, url)
@@ -57,7 +53,7 @@ def get_historical_daily(directory, unzip=False):
     ----------
 
     directory: String.
-               Directory to write the downloaded file.ing.
+               Directory to write the downloaded file.
 
     unzip: Boolean.
            Argument that indicates whether or not to unzip the downloaded
@@ -123,7 +119,7 @@ def _download_chunks(directory, url):
                Directory to write the downloaded file.
 
     url: String.
-         Url of the file to download.
+         URL of the file to download.
 
     """
 
