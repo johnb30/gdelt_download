@@ -25,13 +25,14 @@ def get_daily_data(directory, unzip=False):
            file. Defaults to False.
 
     """
-    now = datetime.datetime.now()
+    now = datetime.date.today()-datetime.timedelta(days=1)
     year = now.year
     month = now.month
     day = now.day
-    url = '%04d%02d%02d' % (year, month, day)
-    print 'Processing {}'.format(url)
-    written_file = _download_chunks(directory, url)
+    url = '%04d%02d%02d.export.CSV.zip' % (year, month, day)
+    get_url = 'http://gdelt.utdallas.edu/data/dailyupdates/{}'.format(url)
+    print 'Downloading {}'.format(url)
+    written_file = _download_chunks(directory, get_url)
     if unzip:
         _unzip_file(directory, written_file)
 
@@ -53,7 +54,7 @@ def _unzip_file(directory, zipped_file):
     z = zipfile.ZipFile(zipped_file)
     for name in z.namelist():
         f = z.open(name)
-        out_path = os.path.join(directory, f)
+        out_path = os.path.join(directory, name)
         with open(out_path, 'w') as out_file:
             out_file.write(f.read())
 
@@ -141,8 +142,7 @@ if __name__ == '__main__':
         get_daily_data(directory, args.unzip)
     elif args.command_name == 'schedule':
         import schedule
-        schedule.every().day.at("10:00").do(get_daily_data(directory,
-                                                           args.unzip))
+        schedule.every().day.at("10:00").do(get_daily_data, directory, args.unzip)
         while 1:
             schedule.run_pending()
             time.sleep(1)

@@ -29,15 +29,17 @@ def get_historical_data(directory, year, unzip=False):
     """
     if int(year) < 2006:
             to_get = '{}'.format(year)
-            print 'Processing {}'.format(to_get)
+            print 'Downloading {}'.format(to_get)
             url = 'http://gdelt.utdallas.edu/data/backfiles/{}.zip'.format(to_get)
             written_file = _download_chunks(directory, url)
     elif int(year) >= 2006:
         for i in range(1, 13):
             to_get = '%4d%02d' % (year, i)
-            print 'Processing {}'.format(to_get)
+            print 'Downloading {}'.format(to_get)
             url = 'http://gdelt.utdallas.edu/data/backfiles/{}.zip'.format(to_get)
             written_file = _download_chunks(directory, url)
+            print 'Pausing 15 seconds...'
+            time.sleep(15)
     else:
         print "That's not a valid year!"
     if unzip:
@@ -62,9 +64,13 @@ def get_historical_daily(directory, unzip=False):
     """
     urls = _get_links()
     for url in urls:
-        written_file = _download_chunks(directory, url)
+        #http://gdelt.utdallas.edu/data/dailyupdates/20130531.export.CSV.zip
+        print 'Downloading {}'.format(url)
+        get_url = 'http://gdelt.utdallas.edu/data/dailyupdates/{}'.format(url)
+        written_file = _download_chunks(directory, get_url)
         if unzip:
             _unzip_file(directory, written_file)
+        print 'Pausing 30 seconds...'
         time.sleep(30)
 
 
@@ -102,7 +108,7 @@ def _unzip_file(directory, zipped_file):
     z = zipfile.ZipFile(zipped_file)
     for name in z.namelist():
         f = z.open(name)
-        out_path = os.path.join(directory, f)
+        out_path = os.path.join(directory, name)
         with open(out_path, 'w') as out_file:
             out_file.write(f.read())
 
@@ -130,18 +136,18 @@ def _download_chunks(directory, url):
         file = os.path.join(temp_path, base_file)
 
         req = urllib2.urlopen(url)
-        total_size = int(req.info().getheader('Content-Length').strip())
+#        total_size = int(req.info().getheader('Content-Length').strip())
         downloaded = 0
         CHUNK = 256 * 10240
         with open(file, 'wb') as fp:
             while True:
                 chunk = req.read(CHUNK)
                 downloaded += len(chunk)
-                prog = math.floor((downloaded / total_size) * 100)
-                if prog == 0.0:
-                    pass
-                else:
-                    print prog
+#                prog = math.floor((downloaded / total_size) * 100)
+#                if prog == 0.0:
+#                    pass
+#                else:
+#                    print prog
                 if not chunk:
                     break
                 fp.write(chunk)
@@ -202,10 +208,10 @@ if __name__ == '__main__':
     if args.command_name == 'daily':
         get_historical_daily(directory, args.unzip)
     elif args.command_name == 'single':
-        get_historical_data(directory, args.single, args.unzip)
+        get_historical_data(directory, args.year, args.unzip)
     elif args.command_name == 'range':
         try:
-            begin, end = args.range.split('-')
+            begin, end = args.year.split('-')
         except Exception, e:
             print 'Error {}. Please enter a valid range, e.g. 1979-1980'.format(e)
         try:
@@ -215,3 +221,5 @@ if __name__ == '__main__':
             print 'Error {}. Please enter a valid range, e.g. 1979-1980.'.format(e)
         for y in range(begin, end+1):
             get_historical_data(directory, y, args.unzip)
+            print 'Pausing 30 seconds...'
+            time.sleep(30)

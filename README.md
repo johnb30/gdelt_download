@@ -8,10 +8,14 @@ previous daily updated. The second script, `download_daily.py`, is aimed
 at downloading the new files that are uploaded to the GDELT website each day.
 This script enables the user to either call the script each day to fetch the
 newest upload, or to run the process in the background to download the new 
-updates each day at 10:00am. 
+updates, i.e., the events for the previous day, each day at 10:00am. 
 
 Each script implements a 30 second delay where appropriate in order to 
 avoid swamping the server.
+
+All of the commands have been tested and run as expected. I haven't had a chance
+to let the daily `schedule` command run for a day, so if it ends up breaking
+please let me know.
 
 ##`download_historical` Usage
 
@@ -50,7 +54,7 @@ is the optional flag indicating whether each downloaded file should be unzipped.
 
 ###Range:
 
-The range mode downloads the updates for a range years.
+The range mode downloads the updates for a range of years.
 
 ####Usage:
 
