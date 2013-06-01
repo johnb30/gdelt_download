@@ -47,7 +47,6 @@ def get_historical_data(directory, year, unzip=False):
                 _unzip_file(directory, written_file)
     else:
         print "That's not a valid year!"
-    print 'Pausing 30 seconds...'
     time.sleep(30)
 
 
