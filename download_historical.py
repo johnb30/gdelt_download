@@ -33,6 +33,7 @@ def get_historical_data(directory, year, unzip=False):
             url = 'http://gdelt.utdallas.edu/data/backfiles/{}.zip'.format(to_get)
             written_file = _download_chunks(directory, url)
     elif int(year) >= 2006:
+        year = int(year)
         for i in range(1, 13):
             to_get = '%4d%02d' % (year, i)
             print 'Downloading {}'.format(to_get)
