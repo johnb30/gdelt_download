@@ -42,9 +42,9 @@ def get_historical_data(directory, year, unzip=False):
             url = 'http://gdelt.utdallas.edu/data/backfiles/{}.zip'.format(to_get)
             written_file = _download_chunks(directory, url)
             print 'Pausing 15 seconds...'
-            time.sleep(15)
             if unzip:
                 _unzip_file(directory, written_file)
+            time.sleep(15)
     else:
         print "That's not a valid year!"
     time.sleep(30)
