@@ -6,12 +6,31 @@ import zipfile
 import argparse
 import datetime
 
-def download_daily(directory, unzip=False):
+#Author: John Beieler, jub270@psu.edu
+#johnbeieler.org
+
+
+def get_daily_data(directory, unzip=False):
+    """
+    Function to download the daily update file from the GDELT website.
+
+    Parameters
+    ----------
+
+    directory: String.
+               Directory to write the downloaded file.
+
+    unzip: Boolean.
+           Argument that indicates whether or not to unzip the downloaded
+           file. Defaults to False.
+
+    """
     now = datetime.datetime.now()
     year = now.year
     month = now.month
     day = now.day
     url = '%04d%02d%02d' % (year, month, day)
+    print 'Processing {}'.format(url)
     written_file = _download_chunks(directory, url)
     if unzip:
         _unzip_file(directory, written_file)
@@ -92,24 +111,24 @@ if __name__ == '__main__':
 
     sub_parse = aparse.add_subparsers(dest='command_name')
 
-    daily_command = sub_parse.add_parser('fetch', help="""Download only the
+    fetch_command = sub_parse.add_parser('fetch', help="""Download only the
                                          daily update for today's date.""",
                                          description="""Download only the
                                          daily update for today's date.""")
-    daily_command.add_argument('-d', '--directory', help="""Path of directory
+    fetch_command.add_argument('-d', '--directory', help="""Path of directory
                                for file download""")
-    daily_command.add_argument('-U', '--unzip', '--unzip', action='store_true',
+    fetch_command.add_argument('-U', '--unzip', action='store_true',
                                default=False, help="""Boolean flag indicating
                                whether or not to unzip the downloaded
                                files.""")
 
-    single_command = sub_parse.add_parser('schedule', help="""Set the script
+    schedule_command = sub_parse.add_parser('schedule', help="""Set the script
                                           to run on a daily basis.""",
                                           description="""Set the script
                                           to run on a daily basis.""")
-    single_command.add_argument('-d', '--directory', help="""Path of directory
+    schedule_command.add_argument('-d', '--directory', help="""Path of directory
                                 for file download""")
-    single_command.add_argument('-U', '--unzip', '--unzip', action='store_true',
+    schedule_command.add_argument('-U', '--unzip', action='store_true',
                                 default=False, help="""Boolean flag indicating
                                 whether or not to unzip the downloaded
                                 files.""")
@@ -119,10 +138,10 @@ if __name__ == '__main__':
     directory = args.directory
 
     if args.command_name == 'fetch':
-        download_daily(directory, args.unzip)
+        get_daily_data(directory, args.unzip)
     elif args.command_name == 'schedule':
         import schedule
-        schedule.every().day.at("10:00").do(download_daily(directory,
+        schedule.every().day.at("10:00").do(get_daily_data(directory,
                                                            args.unzip))
         while 1:
             schedule.run_pending()
