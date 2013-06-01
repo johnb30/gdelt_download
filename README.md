@@ -86,7 +86,7 @@ be unzipped.
 ###Schedule:
 
 The schedule mode sets the script to run in the background and request 
-each day at 10:00am that date's upload from the server. In order to work, the 
+each day at 10:00am the previous date's upload from the server. In order to work, the 
 script must be left running in a terminal tab. The use of a utility such as 
 `screen` or `tmux` is recommended in order to allow the program to run
 unmonitored in the background.
