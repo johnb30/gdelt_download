@@ -104,10 +104,13 @@ def s3_upload(unzipped_file, filename, s3_bucket, folder=None):
     bucket = s3.get_bucket(s3_bucket)
     k = Key(bucket)
     if folder:
-        k.key = '{}/{}'.format(folder, filename)
+        print 'Uploading to {}{}'.format(folder,filename)
+        k.key = '{}{}'.format(folder, filename)
     else:
+        print 'Uploading to {}'.format(filename)
         k.key = filename
     k.set_contents_from_filename(unzipped_file)
+    print 'Upload complete!'
 
 
 def _unzip_file(directory, zipped_file):
@@ -132,7 +135,7 @@ def _unzip_file(directory, zipped_file):
         with open(out_path, 'w') as out_file:
             out_file.write(f.read())
 
-    return out_file
+    return out_path
 
 
 def _download_chunks(directory, url):
