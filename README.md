@@ -66,11 +66,11 @@ is the optional flag indicating whether each downloaded file should be unzipped.
 
 ##`download_daily` Usage
 
-The script has three modes: `fetch`, `schedule`, and `schedule_upload`.
+The script has four modes: `fetch`, `schedule`, `fetch_upload`, and `schedule_upload`.
 
 *Note*: If you wish to use the `schedule` mode, the `schedule` library
 is necessary. You can install using `pip install schedule`. Addtionally, 
-`schedule_upload` requires the `boto` library and a boto config file located
+the `upload` commands require the `boto` library and a boto config file located
 in `~/.boto`. 
 
 ###Fetch:
@@ -121,3 +121,8 @@ to allow the program to run unmonitored in the background.
 Where `-d` is the flag for the directory to which the files should be written,
 `--bucket` indicates the name of the S3 bucket, and `--folder` is the optinal
 argument indicating a folder within the bucket. 
+
+
+###Fetch_upload:
+
+Does the same thing as `schedule_upload` but has to be called every day.

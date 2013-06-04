@@ -199,6 +199,25 @@ if __name__ == '__main__':
                                whether or not to unzip the downloaded
                                files.""")
 
+    fetch_upload_command = sub_parse.add_parser('fetch_upload', help="""Set the
+                                                script to run on a daily basis 
+                                                and upload the results to 
+                                                Amazon S3. Unzips the files by
+                                                default.""",
+                                                description="""Set the
+                                                script to run on a daily basis 
+                                                and upload the results to 
+                                                Amazon S3. Unzips the files by 
+                                                default.""")
+    fetch_upload_command.add_argument('-d', '--directory', help="""Path of 
+                                      directory for file download""")
+    fetch_upload_command.add_argument('--bucket', help="""Amazon S3 bucket
+                                      to which files should be uploaded.
+                                      Required.""", required=True)
+    fetch_upload_command.add_argument('--folder', help="""Optional Argument
+                                      indicating a sub-folder within the bucket
+                                      to which to add files.""")
+
     schedule_command = sub_parse.add_parser('schedule', help="""Set the script
                                             to run on a daily basis.""",
                                             description="""Set the script
@@ -220,11 +239,11 @@ if __name__ == '__main__':
                                           Unzips the files by default.""")
     upload_command.add_argument('-d', '--directory', help="""Path of directory
                                   for file download""")
-    schedule_command.add_argument('--bucket', help="""Amazon S3 bucket
+    upload_command.add_argument('--bucket', help="""Amazon S3 bucket
                                   to which files should be uploaded.
                                   Required.""",
                                   required=True)
-    schedule_command.add_argument('--folder', help="""Optional Argument
+    upload_command.add_argument('--folder', help="""Optional Argument
                                   indicating a sub-folder within the bucket
                                   to which to add files.""")
 
