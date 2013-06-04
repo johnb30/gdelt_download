@@ -252,6 +252,8 @@ if __name__ == '__main__':
 
     if args.command_name == 'fetch':
         get_daily_data(directory, args.unzip)
+    elif args.command_name == 'fetch_upload':
+        get_upload_daily_data(directory, args.bucket, args.folder)
     elif args.command_name == 'schedule_upload':
         import schedule
         schedule.every().day.at("10:00").do(get_upload_daily_data, directory,
