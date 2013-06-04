@@ -21,9 +21,9 @@ please let me know.
 
 The script has three modes: `daily`, `single`, and `range`.
 
-*Note*: If you wish to use the `daily` mode, the `requests` and `lxml` libaries
+*Note*: If you wish to use the `daily` mode, the `requests` and `lxml` libraries
 are necessary. You can install both using `pip install library_name`. The script 
-also makes use of `argparse`, which is included in the standard libary from
+also makes use of `argparse`, which is included in the standard library from
 Python 2.7+. If you are using an older version, it is necessary to install 
 `argparse` using `pip` or `easy_install`. 
 
@@ -66,10 +66,12 @@ is the optional flag indicating whether each downloaded file should be unzipped.
 
 ##`download_daily` Usage
 
-The script has two modes: `fetch`, and `schedule`.
+The script has three modes: `fetch`, `schedule`, and `schedule_upload`.
 
 *Note*: If you wish to use the `schedule` mode, the `schedule` library
-is necessary. You can install using `pip install schedule`. 
+is necessary. You can install using `pip install schedule`. Addtionally, 
+`schedule_upload` requires the `boto` library and a boto config file located
+in `~/.boto`. 
 
 ###Fetch:
 
@@ -98,3 +100,24 @@ unmonitored in the background.
 Where `-d` is the flag for the directory to which the files should be written,
 and `-U` is the optional flag indicating whether each downloaded file should
 be unzipped.
+
+###Schedule_upload:
+
+The schedule_upload mode sets the script to run in the background and request 
+each day at 10:00am the previous date's upload from the server. This new
+download is then uploaded to the indicated Amazon S3 bucket. This helps
+faciliate work using Amazon's Elastic Cloud Compute or Elastic MapReduce 
+environments. Also, due to the uploads to S3, each file is unzipped by default
+and no option to change this is provided. If one wishes, however, it would be
+trivial to change this within the `get_upload_daily_data` function within the
+script. Finally, in order to work, the script must be left running in a terminal
+tab. The use of a utility such as `screen` or `tmux` is recommended in order 
+to allow the program to run unmonitored in the background.
+
+####Usage:
+
+`python download_daily.py schedule_upload -d ~/gdelt/ --bucket gdelt --folder daily/` 
+
+Where `-d` is the flag for the directory to which the files should be written,
+`--bucket` indicates the name of the S3 bucket, and `--folder` is the optinal
+argument indicating a folder within the bucket. 
