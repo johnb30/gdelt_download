@@ -5,8 +5,8 @@ import urllib2
 import argparse
 import zipfile
 
-#Author: John Beieler, jub270@psu.edu
-#johnbeieler.org
+__author__ = 'John Beieler, johnbeieler.org'
+__email__ = 'jub270@psu.edu'
 
 
 def get_historical_data(directory, year, unzip=False):
@@ -114,6 +114,7 @@ def _unzip_file(directory, zipped_file):
         out_path = os.path.join(directory, name)
         with open(out_path, 'w') as out_file:
             out_file.write(f.read())
+    print 'Done unzipping {}'.format(zipped_file)
 
 
 def _download_chunks(directory, url):

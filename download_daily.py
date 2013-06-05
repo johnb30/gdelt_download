@@ -134,6 +134,7 @@ def _unzip_file(directory, zipped_file):
         out_path = os.path.join(directory, name)
         with open(out_path, 'w') as out_file:
             out_file.write(f.read())
+    print 'Done unzipping {}'.format(zipped_file)
 
     return out_path
 
@@ -161,18 +162,18 @@ def _download_chunks(directory, url):
         file = os.path.join(temp_path, base_file)
 
         req = urllib2.urlopen(url)
-        total_size = int(req.info().getheader('Content-Length').strip())
+#        total_size = int(req.info().getheader('Content-Length').strip())
         downloaded = 0
         CHUNK = 256 * 10240
         with open(file, 'wb') as fp:
             while True:
                 chunk = req.read(CHUNK)
                 downloaded += len(chunk)
-                prog = math.floor((downloaded / total_size) * 100)
-                if prog == 0.0:
-                    pass
-                else:
-                    print prog
+#                prog = math.floor((downloaded / total_size) * 100)
+#                if prog == 0.0:
+#                    pass
+#                else:
+#                    print prog
                 if not chunk:
                     break
                 fp.write(chunk)
