@@ -69,7 +69,8 @@ def get_upload_daily_data(directory, bucket, folder_name):
     print 'Downloading {}'.format(url)
     written_file = _download_chunks(directory, get_url)
     final_file = _unzip_file(directory, written_file)
-    s3_upload(final_file, url, bucket, folder_name)
+    upload_filename = url.replace('.zip', '')
+    s3_upload(final_file, upload_filename, bucket, folder_name)
 
 
 def s3_upload(unzipped_file, filename, s3_bucket, folder=None):
