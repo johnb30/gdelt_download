@@ -11,11 +11,9 @@ newest upload, or to run the process in the background to download the new
 updates, i.e., the events for the previous day, each day at 10:00am. 
 
 Each script implements a 30 second delay where appropriate in order to 
-avoid swamping the server.
-
-All of the commands have been tested and run as expected. I haven't had a chance
-to let the daily `schedule` command run for a day, so if it ends up breaking
-please let me know.
+avoid swamping the server. Additionally, all of the functions in
+`download_historical.py` check to see whether the file already exists in the 
+directory before downloading.
 
 ##`download_historical` Usage
 
@@ -69,7 +67,7 @@ is the optional flag indicating whether each downloaded file should be unzipped.
 The script has four modes: `fetch`, `schedule`, `fetch_upload`, and `schedule_upload`.
 
 *Note*: If you wish to use the `schedule` mode, the `schedule` library
-is necessary. You can install using `pip install schedule`. Addtionally, 
+is necessary. You can install using `pip install schedule`. Additionally, 
 the `upload` commands require the `boto` library and a boto config file located
 in `~/.boto`. 
 
@@ -106,7 +104,7 @@ be unzipped.
 The schedule_upload mode sets the script to run in the background and request 
 each day at 10:00am the previous date's upload from the server. This new
 download is then uploaded to the indicated Amazon S3 bucket. This helps
-faciliate work using Amazon's Elastic Cloud Compute or Elastic MapReduce 
+facilitate work using Amazon's Elastic Cloud Compute or Elastic MapReduce 
 environments. Also, due to the uploads to S3, each file is unzipped by default
 and no option to change this is provided. If one wishes, however, it would be
 trivial to change this within the `get_upload_daily_data` function within the
@@ -119,7 +117,7 @@ to allow the program to run unmonitored in the background.
 `python download_daily.py schedule_upload -d ~/gdelt/ --bucket gdelt --folder daily/` 
 
 Where `-d` is the flag for the directory to which the files should be written,
-`--bucket` indicates the name of the S3 bucket, and `--folder` is the optinal
+`--bucket` indicates the name of the S3 bucket, and `--folder` is the optional
 argument indicating a folder within the bucket. 
 
 

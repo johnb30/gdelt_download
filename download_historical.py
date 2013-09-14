@@ -29,25 +29,35 @@ def get_historical_data(directory, year, unzip=False):
     """
     if int(year) < 2006:
             to_get = '{}'.format(year)
-            print 'Downloading {}'.format(to_get)
-            url = 'http://gdelt.utdallas.edu/data/backfiles/{}.zip'.format(to_get)
-            written_file = _download_chunks(directory, url)
-            if unzip:
-                _unzip_file(directory, written_file)
+            sample = to_get + '.csv'
+            sample_zip = to_get + '.zip'
+            files = os.listdir(directory)
+            if sample not in files and sample_zip not in files:
+                print 'Downloading {}'.format(to_get)
+                url = 'http://gdelt.utdallas.edu/data/backfiles/{}.zip'.format(to_get)
+                written_file = _download_chunks(directory, url)
+                if unzip:
+                    _unzip_file(directory, written_file)
+                print 'Pausing 30 seconds...'
+                time.sleep(30)
+            else:
+                print '{} already downloaded, skipping.'.format(to_get)
     elif int(year) >= 2006:
         year = int(year)
         for i in range(1, 13):
             to_get = '%4d%02d' % (year, i)
-            print 'Downloading {}'.format(to_get)
-            url = 'http://gdelt.utdallas.edu/data/backfiles/{}.zip'.format(to_get)
-            written_file = _download_chunks(directory, url)
-            print 'Pausing 15 seconds...'
-            if unzip:
-                _unzip_file(directory, written_file)
-            time.sleep(15)
+            if to_get not in os.listdir(directory):
+                print 'Downloading {}'.format(to_get)
+                url = 'http://gdelt.utdallas.edu/data/backfiles/{}.zip'.format(to_get)
+                written_file = _download_chunks(directory, url)
+                if unzip:
+                    _unzip_file(directory, written_file)
+                print 'Pausing 15 seconds...'
+                time.sleep(15)
+            else:
+                print '{} already downloaded, skipping.'.format(to_get)
     else:
         print "That's not a valid year!"
-    time.sleep(30)
 
 
 def get_historical_daily(directory, unzip=False):
@@ -68,13 +78,18 @@ def get_historical_daily(directory, unzip=False):
     urls = _get_links()
     for url in urls:
         #http://gdelt.utdallas.edu/data/dailyupdates/20130531.export.CSV.zip
-        print 'Downloading {}'.format(url)
         get_url = 'http://gdelt.utdallas.edu/data/dailyupdates/{}'.format(url)
-        written_file = _download_chunks(directory, get_url)
-        if unzip:
-            _unzip_file(directory, written_file)
-        print 'Pausing 30 seconds...'
-        time.sleep(30)
+        sample = url.replace('.zip', '')
+        files = os.listdir(directory)
+        if url not in files and sample not in files:
+            print 'Downloading {}'.format(url)
+            written_file = _download_chunks(directory, get_url)
+            if unzip:
+                _unzip_file(directory, written_file)
+            print 'Pausing 15 seconds...'
+            time.sleep(15)
+        else:
+            print '{} already downloaded, skipping.'.format(url)
 
 
 def _get_links():
@@ -225,5 +240,3 @@ if __name__ == '__main__':
             print 'Error {}. Please enter a valid range, e.g. 1979-1980.'.format(e)
         for y in range(begin, end+1):
             get_historical_data(directory, y, args.unzip)
-            print 'Pausing 30 seconds...'
-            time.sleep(30)
