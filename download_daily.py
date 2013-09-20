@@ -1,8 +1,8 @@
+from __future__ import print_function
 import os
-import math
 import time
-import urllib2
 import zipfile
+import requests
 import argparse
 import datetime
 
@@ -31,7 +31,7 @@ def get_daily_data(directory, unzip=False):
     day = now.day
     url = '%04d%02d%02d.export.CSV.zip' % (year, month, day)
     get_url = 'http://gdelt.utdallas.edu/data/dailyupdates/{}'.format(url)
-    print 'Downloading {}'.format(url)
+    print('Downloading {}'.format(url))
     written_file = _download_chunks(directory, get_url)
     if unzip:
         _unzip_file(directory, written_file)
@@ -66,7 +66,7 @@ def get_upload_daily_data(directory, bucket, folder_name):
     day = now.day
     url = '%04d%02d%02d.export.CSV.zip' % (year, month, day)
     get_url = 'http://gdelt.utdallas.edu/data/dailyupdates/{}'.format(url)
-    print 'Downloading {}'.format(url)
+    print('Downloading {}'.format(url))
     written_file = _download_chunks(directory, get_url)
     final_file = _unzip_file(directory, written_file)
     upload_filename = url.replace('.zip', '')
@@ -105,13 +105,13 @@ def s3_upload(unzipped_file, filename, s3_bucket, folder=None):
     bucket = s3.get_bucket(s3_bucket)
     k = Key(bucket)
     if folder:
-        print 'Uploading to {}{}'.format(folder,filename)
+        print('Uploading to {}{}'.format(folder,filename))
         k.key = '{}{}'.format(folder, filename)
     else:
-        print 'Uploading to {}'.format(filename)
+        print('Uploading to {}'.format(filename))
         k.key = filename
     k.set_contents_from_filename(unzipped_file)
-    print 'Upload complete!'
+    print('Upload complete!')
 
 
 def _unzip_file(directory, zipped_file):
@@ -128,20 +128,19 @@ def _unzip_file(directory, zipped_file):
                  Filepath of the zipped file to unzip.
 
     """
-    print 'Unzipping {}'.format(zipped_file)
+    print('Unzipping {}'.format(zipped_file))
     z = zipfile.ZipFile(zipped_file)
     for name in z.namelist():
         f = z.open(name)
         out_path = os.path.join(directory, name)
         with open(out_path, 'w') as out_file:
             out_file.write(f.read())
-    print 'Done unzipping {}'.format(zipped_file)
+    print('Done unzipping {}'.format(zipped_file))
 
     return out_path
 
 
 def _download_chunks(directory, url):
-#Thanks to https://gist.github.com/gourneau/1430932
     """
     Private function to download a zipped file in chunks.
 
@@ -160,35 +159,22 @@ def _download_chunks(directory, url):
 
     temp_path = directory
     try:
-        file = os.path.join(temp_path, base_file)
+        local_file = os.path.join(temp_path, base_file)
 
-        req = urllib2.urlopen(url)
-#        total_size = int(req.info().getheader('Content-Length').strip())
-        downloaded = 0
-        CHUNK = 256 * 10240
-        with open(file, 'wb') as fp:
-            while True:
-                chunk = req.read(CHUNK)
-                downloaded += len(chunk)
-#                prog = math.floor((downloaded / total_size) * 100)
-#                if prog == 0.0:
-#                    pass
-#                else:
-#                    print prog
-                if not chunk:
-                    break
-                fp.write(chunk)
-    except urllib2.HTTPError, e:
-        print "HTTP Error:", e.code, url
-        return False
-    except urllib2.URLError, e:
-        print "URL Error:", e.reason, url
-        return False
+        req = requests.get(url, stream=True)
+        with open(local_file, 'wb') as fp:
+            for chunk in req.iter_content(chunk_size=1024):
+                if chunk:
+                    fp.write(chunk)
+    except requests.exceptions.HTTPError as e:
+        print("HTTP Error: {}; {}".format(e, url))
+    except requests.exceptions.URLError as e:
+        print("URL Error: {}; {}".format(e, url))
 
-    return file
+    return local_file
 
 if __name__ == '__main__':
-    print 'Running...'
+    print('Running...')
     aparse = argparse.ArgumentParser()
 
     sub_parse = aparse.add_subparsers(dest='command_name')

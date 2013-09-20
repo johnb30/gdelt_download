@@ -1,7 +1,7 @@
+from __future__ import print_function
 import os
-import math
 import time
-import urllib2
+import requests
 import argparse
 import zipfile
 
@@ -33,31 +33,31 @@ def get_historical_data(directory, year, unzip=False):
             sample_zip = to_get + '.zip'
             files = os.listdir(directory)
             if sample not in files and sample_zip not in files:
-                print 'Downloading {}'.format(to_get)
+                print('Downloading {}'.format(to_get))
                 url = 'http://gdelt.utdallas.edu/data/backfiles/{}.zip'.format(to_get)
                 written_file = _download_chunks(directory, url)
                 if unzip:
                     _unzip_file(directory, written_file)
-                print 'Pausing 30 seconds...'
+                print('Pausing 30 seconds...')
                 time.sleep(30)
             else:
-                print '{} already downloaded, skipping.'.format(to_get)
+                print('{} already downloaded, skipping.'.format(to_get))
     elif int(year) >= 2006:
         year = int(year)
         for i in range(1, 13):
             to_get = '%4d%02d' % (year, i)
             if to_get not in os.listdir(directory):
-                print 'Downloading {}'.format(to_get)
+                print('Downloading {}'.format(to_get))
                 url = 'http://gdelt.utdallas.edu/data/backfiles/{}.zip'.format(to_get)
                 written_file = _download_chunks(directory, url)
                 if unzip:
                     _unzip_file(directory, written_file)
-                print 'Pausing 15 seconds...'
+                print('Pausing 15 seconds...')
                 time.sleep(15)
             else:
-                print '{} already downloaded, skipping.'.format(to_get)
+                print('{} already downloaded, skipping.'.format(to_get))
     else:
-        print "That's not a valid year!"
+        print("That's not a valid year!")
 
 
 def get_historical_daily(directory, unzip=False):
@@ -82,14 +82,14 @@ def get_historical_daily(directory, unzip=False):
         sample = url.replace('.zip', '')
         files = os.listdir(directory)
         if url not in files and sample not in files:
-            print 'Downloading {}'.format(url)
+            print('Downloading {}'.format(url))
             written_file = _download_chunks(directory, get_url)
             if unzip:
                 _unzip_file(directory, written_file)
-            print 'Pausing 15 seconds...'
+            print('Pausing 15 seconds...')
             time.sleep(15)
         else:
-            print '{} already downloaded, skipping.'.format(url)
+            print('{} already downloaded, skipping.'.format(url))
 
 
 def _get_links():
@@ -122,18 +122,17 @@ def _unzip_file(directory, zipped_file):
                  Filepath of the zipped file to unzip.
 
     """
-    print 'Unzipping {}'.format(zipped_file)
+    print('Unzipping {}'.format(zipped_file))
     z = zipfile.ZipFile(zipped_file)
     for name in z.namelist():
         f = z.open(name)
         out_path = os.path.join(directory, name)
         with open(out_path, 'w') as out_file:
             out_file.write(f.read())
-    print 'Done unzipping {}'.format(zipped_file)
+    print('Done unzipping {}'.format(zipped_file))
 
 
 def _download_chunks(directory, url):
-#Thanks to https://gist.github.com/gourneau/1430932
     """
     Private function to download a zipped file in chunks.
 
@@ -152,35 +151,23 @@ def _download_chunks(directory, url):
 
     temp_path = directory
     try:
-        file = os.path.join(temp_path, base_file)
+        local_file = os.path.join(temp_path, base_file)
 
-        req = urllib2.urlopen(url)
-#        total_size = int(req.info().getheader('Content-Length').strip())
-        downloaded = 0
-        CHUNK = 256 * 10240
-        with open(file, 'wb') as fp:
-            while True:
-                chunk = req.read(CHUNK)
-                downloaded += len(chunk)
-#                prog = math.floor((downloaded / total_size) * 100)
-#                if prog == 0.0:
-#                    pass
-#                else:
-#                    print prog
-                if not chunk:
-                    break
-                fp.write(chunk)
-    except urllib2.HTTPError, e:
-        print "HTTP Error:", e.code, url
-        return False
-    except urllib2.URLError, e:
-        print "URL Error:", e.reason, url
-        return False
+        req = requests.get(url, stream=True)
+        with open(local_file, 'wb') as fp:
+            for chunk in req.iter_content(chunk_size=1024):
+                if chunk:
+                    fp.write(chunk)
+    except requests.exceptions.HTTPError as e:
+        print("HTTP Error: {}; {}".format(e, url))
+    except requests.exceptions.URLError as e:
+        print("URL Error: {}; {}".format(e, url))
 
-    return file
+    return local_file
+
 
 if __name__ == '__main__':
-    print 'Running...'
+    print('Running...')
     aparse = argparse.ArgumentParser()
 
     sub_parse = aparse.add_subparsers(dest='command_name')
@@ -232,11 +219,13 @@ if __name__ == '__main__':
         try:
             begin, end = args.year.split('-')
         except Exception, e:
-            print 'Error {}. Please enter a valid range, e.g. 1979-1980'.format(e)
+            print('Error {}. Please enter a valid range, e.g. \
+                  1979-1980'.format(e))
         try:
             begin = int(begin)
             end = int(end)
         except Exception, e:
-            print 'Error {}. Please enter a valid range, e.g. 1979-1980.'.format(e)
+            print('Error {}. Please enter a valid range, e.g. \
+                  1979-1980.'.format(e))
         for y in range(begin, end+1):
             get_historical_data(directory, y, args.unzip)
