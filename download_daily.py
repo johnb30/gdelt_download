@@ -1,5 +1,7 @@
 from __future__ import print_function
+from __future__ import unicode_literals
 import os
+import io
 import sys
 import time
 import zipfile
@@ -134,8 +136,9 @@ def _unzip_file(directory, zipped_file):
     for name in z.namelist():
         f = z.open(name)
         out_path = os.path.join(directory, name)
-        with open(out_path, 'w') as out_file:
-            out_file.write(f.read())
+        with io.open(out_path, 'w', encoding='utf-8') as out_file:
+            content = f.read().decode('utf-8')
+            out_file.write(content)
     print('Done unzipping {}'.format(zipped_file))
 
     return out_path
@@ -163,7 +166,7 @@ def _download_chunks(directory, url):
         local_file = os.path.join(temp_path, base_file)
 
         req = requests.get(url, stream=True)
-        with open(local_file, 'wb') as fp:
+        with io.open(local_file, 'wb') as fp:
             for chunk in req.iter_content(chunk_size=1024):
                 if chunk:
                     fp.write(chunk)

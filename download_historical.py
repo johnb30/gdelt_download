@@ -1,5 +1,7 @@
 from __future__ import print_function
+from __future__ import unicode_literals
 import os
+import io
 import sys
 import time
 import requests
@@ -127,8 +129,9 @@ def _unzip_file(directory, zipped_file):
     for name in z.namelist():
         f = z.open(name)
         out_path = os.path.join(directory, name)
-        with open(out_path, 'w') as out_file:
-            out_file.write(f.read())
+        with io.open(out_path, 'w', encoding='utf-8') as out_file:
+            content = f.read().decode('utf-8')
+            out_file.write(content)
     print('Done unzipping {}'.format(zipped_file))
 
 
@@ -154,7 +157,7 @@ def _download_chunks(directory, url):
         local_file = os.path.join(temp_path, base_file)
 
         req = requests.get(url, stream=True)
-        with open(local_file, 'wb') as fp:
+        with io.open(local_file, 'wb') as fp:
             for chunk in req.iter_content(chunk_size=1024):
                 if chunk:
                     fp.write(chunk)
@@ -218,13 +221,13 @@ if __name__ == '__main__':
     elif args.command_name == 'range':
         try:
             begin, end = args.year.split('-')
-        except Exception, e:
+        except Exception as e:
             print('Error {}. Please enter a valid range, e.g. \
                   1979-1980'.format(e))
         try:
             begin = int(begin)
             end = int(end)
-        except Exception, e:
+        except Exception as e:
             print('Error {}. Please enter a valid range, e.g. \
                   1979-1980.'.format(e))
         for y in range(begin, end+1):
