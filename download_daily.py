@@ -1,5 +1,6 @@
 from __future__ import print_function
 import os
+import sys
 import time
 import zipfile
 import requests
@@ -105,7 +106,7 @@ def s3_upload(unzipped_file, filename, s3_bucket, folder=None):
     bucket = s3.get_bucket(s3_bucket)
     k = Key(bucket)
     if folder:
-        print('Uploading to {}{}'.format(folder,filename))
+        print('Uploading to {}{}'.format(folder, filename))
         k.key = '{}{}'.format(folder, filename)
     else:
         print('Uploading to {}'.format(filename))
@@ -191,16 +192,16 @@ if __name__ == '__main__':
                                files.""")
 
     fetch_upload_command = sub_parse.add_parser('fetch_upload', help="""Set the
-                                                script to run on a daily basis 
-                                                and upload the results to 
+                                                script to run on a daily basis
+                                                and upload the results to
                                                 Amazon S3. Unzips the files by
                                                 default.""",
                                                 description="""Set the
-                                                script to run on a daily basis 
-                                                and upload the results to 
-                                                Amazon S3. Unzips the files by 
+                                                script to run on a daily basis
+                                                and upload the results to
+                                                Amazon S3. Unzips the files by
                                                 default.""")
-    fetch_upload_command.add_argument('-d', '--directory', help="""Path of 
+    fetch_upload_command.add_argument('-d', '--directory', help="""Path of
                                       directory for file download""")
     fetch_upload_command.add_argument('--bucket', help="""Amazon S3 bucket
                                       to which files should be uploaded.
@@ -231,9 +232,9 @@ if __name__ == '__main__':
     upload_command.add_argument('-d', '--directory', help="""Path of directory
                                   for file download""")
     upload_command.add_argument('--bucket', help="""Amazon S3 bucket
-                                  to which files should be uploaded.
-                                  Required.""",
-                                  required=True)
+                                to which files should be uploaded.
+                                Required.""",
+                                required=True)
     upload_command.add_argument('--folder', help="""Optional Argument
                                   indicating a sub-folder within the bucket
                                   to which to add files.""")
@@ -246,15 +247,20 @@ if __name__ == '__main__':
     elif args.command_name == 'fetch_upload':
         get_upload_daily_data(directory, args.bucket, args.folder)
     elif args.command_name == 'schedule_upload':
-        import schedule
-        schedule.every().day.at("10:00").do(get_upload_daily_data, directory,
-                                            args.bucket, args.folder)
-        while 1:
-            schedule.run_pending()
-            time.sleep(1)
+        if sys.version_info[0] == 2:
+            import schedule
+            schedule.every().day.at("10:00").do(get_upload_daily_data,
+                                                directory, args.bucket,
+                                                args.folder)
+            while 1:
+                schedule.run_pending()
+                time.sleep(1)
+        else:
+            print('Only Python 2.x is supported for this command.')
     elif args.command_name == 'schedule':
         import schedule
-        schedule.every().day.at("10:00").do(get_daily_data, directory, args.unzip)
+        schedule.every().day.at("10:00").do(get_daily_data,
+                                            directory, args.unzip)
         while 1:
             schedule.run_pending()
             time.sleep(1)

@@ -1,5 +1,6 @@
 from __future__ import print_function
 import os
+import sys
 import time
 import requests
 import argparse
@@ -97,7 +98,6 @@ def _get_links():
     Private function to obtain the links for the daily update files from
     the GDELT website. Requires requests and lxmlself.
     """
-    import requests
     import lxml.html as lh
     url = 'http://gdelt.utdallas.edu/data/dailyupdates/?O=D'
     page = requests.get(url)
