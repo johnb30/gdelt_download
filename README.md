@@ -15,12 +15,18 @@ avoid swamping the server. Additionally, all of the functions in
 `download_historical.py` check to see whether the file already exists in the 
 directory before downloading.
 
+###Dependencies
+
+As of September 20, 2013 the `requests` library is required for all functions.
+This requirement was to help ease the transition from Python 2 to Python 3.
+The library is easy to install using `pip` or `easy_install`.
+
 ##`download_historical` Usage
 
 The script has three modes: `daily`, `single`, and `range`.
 
-*Note*: If you wish to use the `daily` mode, the `requests` and `lxml` libraries
-are necessary. You can install both using `pip install library_name`. The script 
+*Note*: If you wish to use the `daily` mode, the `lxml` library
+is necessary. You can install the library using `pip install lxml`. The script 
 also makes use of `argparse`, which is included in the standard library from
 Python 2.7+. If you are using an older version, it is necessary to install 
 `argparse` using `pip` or `easy_install`. 
@@ -70,6 +76,11 @@ The script has four modes: `fetch`, `schedule`, `fetch_upload`, and `schedule_up
 is necessary. You can install using `pip install schedule`. Additionally, 
 the `upload` commands require the `boto` library and a boto config file located
 in `~/.boto`. 
+
+*Note: Due to the use of `boto`, the `upload` commands are not compatible with 
+Python 3. There is the `botocore` project, which is compatible with Python 3,
+but it doesn't seem stable enough for me to use currently. Feel free to change
+my mind, though.*
 
 ###Fetch:
 
