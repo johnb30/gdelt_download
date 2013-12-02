@@ -33,7 +33,7 @@ def get_daily_data(directory, unzip=False):
     month = now.month
     day = now.day
     url = '%04d%02d%02d.export.CSV.zip' % (year, month, day)
-    get_url = 'http://gdelt.utdallas.edu/data/dailyupdates/{}'.format(url)
+    get_url = 'http://gdelt.umn.edu/data/dailyupdates/{}'.format(url)
     print('Downloading {}'.format(url))
     written_file = _download_chunks(directory, get_url)
     if unzip:
@@ -68,7 +68,7 @@ def get_upload_daily_data(directory, bucket, folder_name):
     month = now.month
     day = now.day
     url = '%04d%02d%02d.export.CSV.zip' % (year, month, day)
-    get_url = 'http://gdelt.utdallas.edu/data/dailyupdates/{}'.format(url)
+    get_url = 'http://gdelt.umn.edu/data/dailyupdates/{}'.format(url)
     print('Downloading {}'.format(url))
     written_file = _download_chunks(directory, get_url)
     final_file = _unzip_file(directory, written_file)

@@ -37,7 +37,7 @@ def get_historical_data(directory, year, unzip=False):
             files = os.listdir(directory)
             if sample not in files and sample_zip not in files:
                 print('Downloading {}'.format(to_get))
-                url = 'http://gdelt.utdallas.edu/data/backfiles/{}.zip'.format(to_get)
+                url = 'http://gdelt.umn.edu/data/backfiles/{}.zip'.format(to_get)
                 written_file = _download_chunks(directory, url)
                 if unzip:
                     _unzip_file(directory, written_file)
@@ -51,7 +51,7 @@ def get_historical_data(directory, year, unzip=False):
             to_get = '%4d%02d' % (year, i)
             if to_get not in os.listdir(directory):
                 print('Downloading {}'.format(to_get))
-                url = 'http://gdelt.utdallas.edu/data/backfiles/{}.zip'.format(to_get)
+                url = 'http://gdelt.umn.edu/data/backfiles/{}.zip'.format(to_get)
                 written_file = _download_chunks(directory, url)
                 if unzip:
                     _unzip_file(directory, written_file)
@@ -80,8 +80,8 @@ def get_historical_daily(directory, unzip=False):
     """
     urls = _get_links()
     for url in urls:
-        #http://gdelt.utdallas.edu/data/dailyupdates/20130531.export.CSV.zip
-        get_url = 'http://gdelt.utdallas.edu/data/dailyupdates/{}'.format(url)
+        #http://gdeltMn.edu/data/dailyupdates/20130531.export.CSV.zip
+        get_url = 'http://gdelt.umn.edu/data/dailyupdates/{}'.format(url)
         sample = url.replace('.zip', '')
         files = os.listdir(directory)
         if url not in files and sample not in files:
@@ -101,7 +101,7 @@ def _get_links():
     the GDELT website. Requires requests and lxmlself.
     """
     import lxml.html as lh
-    url = 'http://gdelt.utdallas.edu/data/dailyupdates/?O=D'
+    url = 'http://gdelt.umn.edu/data/dailyupdates/?O=D'
     page = requests.get(url)
     text = lh.fromstring(page.content)
     urls = text.xpath('//a/@href')
