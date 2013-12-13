@@ -125,14 +125,17 @@ def _unzip_file(directory, zipped_file):
 
     """
     print('Unzipping {}'.format(zipped_file))
-    z = zipfile.ZipFile(zipped_file)
-    for name in z.namelist():
-        f = z.open(name)
-        out_path = os.path.join(directory, name)
-        with io.open(out_path, 'w', encoding='utf-8') as out_file:
-            content = f.read().decode('utf-8')
-            out_file.write(content)
-    print('Done unzipping {}'.format(zipped_file))
+    try:
+        z = zipfile.ZipFile(zipped_file)
+        for name in z.namelist():
+            f = z.open(name)
+            out_path = os.path.join(directory, name)
+            with io.open(out_path, 'w', encoding='utf-8') as out_file:
+                content = f.read().decode('utf-8')
+                out_file.write(content)
+        print('Done unzipping {}'.format(zipped_file))
+    except zipfile.BadZipfile:
+        print('Bad zip file for {}, passing.'.format(zipped_file))
 
 
 def _download_chunks(directory, url):
