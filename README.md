@@ -1,3 +1,11 @@
+**Note: 02/17/14**
+
+I am no longer associated with the GDELT project as noted
+[here](http://blog.gdelt.org/2014/01/20/gdelt-suspension/), so I will
+not continue to update this package. There is a fork of this project
+[here](https://github.com/00krishna/gdelt_download) that has some updates
+available.
+
 ##GDELT Download
 
 The GDELT data is spread across multiple files, with a new file added each day.
