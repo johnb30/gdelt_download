@@ -172,10 +172,8 @@ def _download_chunks(directory, url):
             for chunk in req.iter_content(chunk_size=1024):
                 if chunk:
                     fp.write(chunk)
-    except requests.exceptions.HTTPError as e:
-        print("HTTP Error: {}; {}".format(e, url))
-    except requests.exceptions.URLError as e:
-        print("URL Error: {}; {}".format(e, url))
+    except Exception as e:
+        print("There was an error: {}; {}".format(e, url))
 
     return local_file
 

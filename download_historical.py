@@ -2,7 +2,6 @@ from __future__ import print_function
 from __future__ import unicode_literals
 import os
 import io
-import sys
 import time
 import requests
 import argparse
@@ -37,7 +36,7 @@ def get_historical_data(directory, year, unzip=False):
             files = os.listdir(directory)
             if sample not in files and sample_zip not in files:
                 print('Downloading {}'.format(to_get))
-                url = 'http://gdelt.umn.edu/data/backfiles/{}.zip'.format(to_get)
+                url = 'http://data.gdeltproject.org/events/{}.zip'.format(to_get)
                 written_file = _download_chunks(directory, url)
                 if unzip:
                     _unzip_file(directory, written_file)
@@ -51,7 +50,7 @@ def get_historical_data(directory, year, unzip=False):
             to_get = '%4d%02d' % (year, i)
             if to_get not in os.listdir(directory):
                 print('Downloading {}'.format(to_get))
-                url = 'http://gdelt.umn.edu/data/backfiles/{}.zip'.format(to_get)
+                url = 'http://data.gdeltproject.org/events/{}.zip'.format(to_get)
                 written_file = _download_chunks(directory, url)
                 if unzip:
                     _unzip_file(directory, written_file)
@@ -81,7 +80,7 @@ def get_historical_daily(directory, unzip=False):
     urls = _get_links()
     for url in urls:
         #http://gdeltMn.edu/data/dailyupdates/20130531.export.CSV.zip
-        get_url = 'http://gdelt.umn.edu/data/dailyupdates/{}'.format(url)
+        get_url = 'http://data.gdeltproject.org/events/{}'.format(url)
         sample = url.replace('.zip', '')
         files = os.listdir(directory)
         if url not in files and sample not in files:
@@ -101,11 +100,11 @@ def _get_links():
     the GDELT website. Requires requests and lxmlself.
     """
     import lxml.html as lh
-    url = 'http://gdelt.umn.edu/data/dailyupdates/?O=D'
+    url = 'http://data.gdeltproject.org/events/index.html'
     page = requests.get(url)
     text = lh.fromstring(page.content)
     urls = text.xpath('//a/@href')
-    urls = [url for url in urls if '.zip' in url]
+    urls = [u for u in urls if '.zip' in u]
 
     return urls
 
@@ -233,5 +232,5 @@ if __name__ == '__main__':
         except Exception as e:
             print('Error {}. Please enter a valid range, e.g. \
                   1979-1980.'.format(e))
-        for y in range(begin, end+1):
+        for y in range(begin, end + 1):
             get_historical_data(directory, y, args.unzip)
